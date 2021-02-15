@@ -5,6 +5,25 @@
 mvn clean install spring-boot:run
 ```
 
+#### To Test
+GET
+```
+http://localhost:8080/echo?message=test
+```
+
+POST
+```
+curl --location --request POST 'localhost:8080/echo' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{"message":"test"}'
+
+curl --location --request POST 'localhost:8080/echo' \
+--header 'Accept: application/json' \
+--header 'Content-Type: application/json' \
+--data-raw '{"message":"This is too long for the the validation"}'
+```
+
 #### Docker Build
 docker image build . --tag="johndobie/spring-boot-example"
 
