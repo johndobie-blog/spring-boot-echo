@@ -16,9 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
 
 import static com.johndobie.springboot.web.controller.SpringController.ECHO_ENDPOINT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

@@ -3,7 +3,7 @@ package com.johndobie.springboot.web.controller;
 import com.johndobie.springboot.web.model.EchoModel;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @RestController
 public class SpringController {

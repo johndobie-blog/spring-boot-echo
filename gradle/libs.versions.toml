@@ -1,0 +1,16 @@
+[versions]
+spring-boot = "3.3.1"
+spring-dependency-management = "1.1.5"
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "spring-dependency-management" }
+
+[libraries]
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-boot-starter-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+hibernate-validator = { module = "org.hibernate.validator:hibernate-validator" }
+rest-assured = { module = "io.rest-assured:rest-assured" }
+lombok = { module = "org.projectlombok:lombok" }
+

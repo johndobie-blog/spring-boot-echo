@@ -1,86 +1,169 @@
-### An example of how to build REST services using Spring Boot.
+# Spring Boot Echo
 
-#### To Run
-```
-mvn clean install spring-boot:run
-```
+![Java 21](https://img.shields.io/badge/Java-21-007396?logo=openjdk&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.x-6DB33F?logo=springboot&logoColor=white)
+![Gradle](https://img.shields.io/badge/Gradle-Kotlin%20DSL-02303A?logo=gradle&logoColor=white)
+![Docker Ready](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
 
-#### To Test
-GET
-```
-http://localhost:8080/echo?message=test
-```
+Lightweight Spring Boot REST API that echoes messages via `GET /echo` and `POST /echo`.
 
-POST
-```
-curl --location --request POST 'localhost:8080/echo' \
---header 'Accept: application/json' \
---header 'Content-Type: application/json' \
---data-raw '{"message":"test"}'
+## Contents
 
-curl --location --request POST 'localhost:8080/echo' \
---header 'Accept: application/json' \
---header 'Content-Type: application/json' \
---data-raw '{"message":"This is too long for the the validation"}'
-```
+- [Tech Stack](#tech-stack)
+- [Prerequisites](#prerequisites)
+- [Quick Start](#quick-start)
+- [API Reference](#api-reference)
+- [Build and Test](#build-and-test)
+- [Docker](#docker)
+- [Troubleshooting](#troubleshooting)
+- [Development Notes](#development-notes)
+- [Project Structure](#project-structure)
 
-#### Docker Build
-docker image build . --tag="johndobie/spring-boot-example"
+## Tech Stack
 
-#### Run the image locally
-docker run -p 8080:8080 -t "johndobie/spring-boot-example"    
+- Java 21 (Gradle toolchain)
+- Spring Boot
+- Gradle (Kotlin DSL)
+- JUnit 5 for tests
 
-### Run In Docker Locally
-Build the image
-``` 
- Sending build context to Docker daemon  19.41MB
- Step 1/7 : FROM openjdk:8u212-jdk-alpine
-  ---> a3562aa0b991
- Step 2/7 : LABEL maintainer="john@dobie.email"
-  ---> Using cache
-  ---> 44b0a1cd1876
- Step 3/7 : VOLUME /tmp
-  ---> Using cachedocker
-  
-  ---> 487893eed320
- Step 4/7 : EXPOSE 8080
-  ---> Using cache
-  ---> 77c955bfd0dc
- Step 5/7 : ARG JAR_FILE=target/*.jar
-  ---> Using cache
-  ---> f27a9ac993d5
- Step 6/7 : ADD ${JAR_FILE} echo.jar
-  ---> Using cache
-  ---> 61704f9e8aa5
- Step 7/7 : ENTRYPOINT ["java","-jar","/echo.jar"]
-  ---> Using cache
-  ---> 52b221836c76
- Successfully built 52b221836c76
- Successfully tagged johndobie/spring-boot-echo:latest
+## Prerequisites
+
+- Java 21 installed
+- Docker (optional, for container runs)
+
+## Quick Start
+
+Run the app locally:
+
+```bash
+./gradlew bootRun
 ```
 
-Run the image locally
-```
- docker run -p 8080:8080 -t "johndobie/spring-boot-echo"    
+The API is available at `http://localhost:8080`.
+
+## API Reference
+
+### `GET /echo`
+
+Returns the query-string message.
+
+Example:
+
+```bash
+curl "http://localhost:8080/echo?message=test"
 ```
 
-## Push to Dockerhub
-Login to DockerHub
-```
->docker login -u johndobie
+Response:
 
-Password:
-Login Succeeded
+```text
+test
 ```
 
-Push to DockerHub
+### `POST /echo`
+
+Accepts JSON body:
+
+```json
+{
+  "message": "test"
+}
 ```
->docker push johndobie/spring-boot-echo
-The push refers to repository [docker.io/johndobie/spring-boot-echo]
-The push refers to repository [docker.io/johndobie/spring-boot-echo]
-7a1572ef2719: Pushed
-ceaf9e1ebef5: Pushed
-9b9b7f3d56a0: Pushed
-f1b5933fe4b5: Pushed
-latest: digest: sha256:8ff6f8504247393a78c89c40a76fcacf83920e860b5db7620611a6d365e507c2 size: 1159
+
+Validation rules:
+
+- `message` is required
+- `message` length must be 1-20 characters
+
+Example:
+
+```bash
+curl --location --request POST "http://localhost:8080/echo" \
+  --header "Accept: application/json" \
+  --header "Content-Type: application/json" \
+  --data-raw '{"message":"test"}'
 ```
+
+Validation failure example (`422 Unprocessable Entity`):
+
+```bash
+curl --location --request POST "http://localhost:8080/echo" \
+  --header "Accept: application/json" \
+  --header "Content-Type: application/json" \
+  --data-raw '{"message":"This message is longer than twenty characters"}'
+```
+
+## Build and Test
+
+Run tests:
+
+```bash
+./gradlew test
+```
+
+Build executable jar:
+
+```bash
+./gradlew bootJar
+```
+
+## Docker
+
+Build image:
+
+```bash
+docker image build . --tag "johndobie/spring-boot-echo"
+```
+
+Run container:
+
+```bash
+docker run --rm -p 8080:8080 -t "johndobie/spring-boot-echo"
+```
+
+## Troubleshooting
+
+### Port `8080` already in use
+
+```bash
+lsof -ti tcp:8080 | xargs kill
+```
+
+### Java version mismatch
+
+Check your local Java version:
+
+```bash
+java -version
+```
+
+This project targets Java 21 and is configured with a Gradle toolchain in `build.gradle.kts`.
+
+### Build warnings for Gradle 9 compatibility
+
+Show all deprecation warnings:
+
+```bash
+./gradlew test --warning-mode all
+```
+
+### Docker image fails to start
+
+- Ensure the boot jar exists by running `./gradlew bootJar`
+- Rebuild the image after any code changes
+- Verify no other service is bound to `8080`
+
+## Development Notes
+
+- Use `./gradlew clean test` before opening a PR.
+- Keep the API contract for `/echo` stable unless intentionally versioning.
+- Prefer `build.gradle.kts` and `settings.gradle.kts` for all build configuration updates.
+- Regenerate docs examples if request/response behavior changes.
+- Keep Docker and local run instructions in sync after build changes.
+
+## Project Structure
+
+- `src/main/java` - application source
+- `src/test/java` - tests
+- `build.gradle.kts` - Gradle build configuration
+- `Dockerfile` - container build definition
+

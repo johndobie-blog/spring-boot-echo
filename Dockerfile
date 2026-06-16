@@ -1,5 +1,5 @@
-# Start with a base image containing Java runtime
-FROM openjdk:8u212-jdk-alpine
+# Start with a base image containing Java 21 runtime
+FROM eclipse-temurin:21-jre-alpine
 
 # Add Maintainer Info
 LABEL maintainer="john@dobie.email"
@@ -10,11 +10,11 @@ VOLUME /tmp
 # Make port 8080 available outside this container
 EXPOSE 8080
 
-# The application's jar file
-ARG JAR_FILE=target/*.jar
+# The application's executable boot jar (exclude the -plain jar)
+ARG JAR_FILE=build/libs/*-SNAPSHOT.jar
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} spring-boot-example.jar
+ADD ${JAR_FILE} app.jar
 
 # Run the jar file
-ENTRYPOINT ["java","-jar","/spring-boot-example.jar"]
+ENTRYPOINT ["java","-jar","/app.jar"]
